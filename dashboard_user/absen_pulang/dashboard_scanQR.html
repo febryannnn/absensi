@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+     <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    
+}
+
+body {
+    min-height: 100vh;
+    /* background: #f5f5f5; */
+    background: linear-gradient(135deg, #1e3a8a, #2563eb, #93c5fd);
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #000000;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+video {
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    margin: 0 auto 20px;
+    display: block;
+    background: #000;
+    border-radius: 12px;
+}
+
+canvas {
+    display: none;
+}
+
+#output {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    background: #f9f9f9;
+}
+
+.sub-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.btn-container {
+    margin-top:20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+#enter_code {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    background: #f9f9f9;
+}
+
+.enter_manual label {
+    display: flex;
+    margin:10px 0;
+}
+
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s;
+    background:rgb(2, 2, 104);
+    color:white;
+}
+
+#startButton {
+    background: #4CAF50;
+    color: white;
+}
+
+#startButton:hover {
+    background: #45a049;
+}
+
+#stopButton {
+    background: #f44336;
+    color: white;
+}
+
+#stopButton:hover {
+    background: #da190b;
+}
+
+.submit {
+    margin-top: 20px;
+    border-top: 1px solid #e1e1e1;
+    padding-top: 20px;
+}
+
+.submit form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+label {
+    font-size: 16px;
+    color: #000000;
+    font-weight: 500;
+}
+
+#scan-btn {
+    background: #2196F3;
+    color: white;
+    width: 200px;
+}
+
+#scan-btn:hover {
+    background: #1976D2;
+}
+
+#back {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #757575;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    width: 100%;
+    max-width:150px;
+    text-align: center;
+    transition: background 0.2s;
+}
+
+#back:hover {
+    background: #616161;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        margin: 10px;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .btn-container {
+        flex-direction: column;
+    }
+
+    button, #back {
+        width: 100%;
+    }
+}
+
+.qr button { 
+    margin:0 auto;
+    display: flex;
+}
+
+.enter_manual button {
+    margin:0 auto;
+    display: flex;
+}
+
+#switchButton {
+    padding:5px 20px;
+    display: flex;
+    margin:0 auto;
+}
+
+
+
+     </style>
+</head>
+<body>
+    <div class="container">
+        <h1>QR Code Scanner</h1>
+        <video id="video">Scan QR Code</video>
+        <canvas id="canvas"></canvas>
+
+        <button id="switchButton">Switch Camera</button>
+        <div class="sub-container">
+            <div class="btn-container">
+                <button id="startButton">Mulai Scan</button>
+                <button id="stopButton">Hentikan Scan</button>
+            </div>
+            
+            <div box-container>
+                <form action="proses_scan.php" method="POST" class="qr">
+                    <input type="text" id="output" name="hasil_scan" placeholder="Hasil Scan QR Code" readonly>
+                    <button type="submit" name="button_qr">Submit</button>
+                </form>
+            </div>
+            <div box-container>
+                <form action="proses_scan.php" class="enter_manual" method="POST">
+                    <label for="enter_code">Atau Enter Kode Manual</label>
+                    <input type="text" name="enter_code" id="enter_code" placeholder="Enter Code Here">
+                    <button type="submit" id="button" name="button_code" >Submit</button>
+                </form>
+            </div>
+
+            <div class="submit">
+                <form action="proses_scan.php" method="POST">
+                    <label for="scan_code">Back to Home</label>
+                    <a href="../dashboard_user.php" type="submit" id="back" name="back">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script>
+let video = document.getElementById("video");
+        let canvasElement = document.getElementById("canvas");
+        let canvas = canvasElement.getContext("2d");
+        let outputData = document.getElementById("output");
+        let stream = null;
+        let currentFacingMode = "environment"; // Default to rear camera
+
+        // Modified to use the existing button instead of creating a new one
+        document.getElementById("switchButton").onclick = switchCamera;
+
+        function switchCamera() {
+            if (stream) {
+                stopScanning();
+                currentFacingMode = currentFacingMode === "environment" ? "user" : "environment";
+                startScanning();
+            }
+        }
+
+function startScanning() {
+    navigator.mediaDevices.getUserMedia({
+        video: {
+            facingMode: currentFacingMode
+        }
+    })
+    .then(function(str) {
+        stream = str;
+        video.srcObject = stream;
+        video.setAttribute("playsinline", true);
+        video.play();
+        requestAnimationFrame(tick);
+    })
+    .catch(function(error) {
+        console.error("Error accessing camera:", error);
+        alert("Gagal mengakses kamera: " + error.message);
+    });
+}
+
+function stopScanning() {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+        outputData.value = "";
+    }
+}
+
+function tick() {
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvasElement.height = video.videoHeight;
+        canvasElement.width = video.videoWidth;
+        canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+        let imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+        let code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "dontInvert",
+        });
+        
+        if (code) {
+            outputData.value = code.data;
+            console.log("QR Code terdeteksi:", code.data);
+            // stopScanning();
+            // return;
+        }
+    }
+    requestAnimationFrame(tick);
+}
+
+document.getElementById("startButton").onclick = startScanning;
+document.getElementById("stopButton").onclick = stopScanning;
+    </script>
+</body>
+</html>

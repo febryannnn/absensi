@@ -1,0 +1,17 @@
+{
+    "name": "asus/absensi",
+    "autoload": {
+        "psr-4": {
+            "Asus\\Absensi\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "febryannnn",
+            "email": "farelfebryan06@gmail.com"
+        }
+    ],
+    "require": {
+        "tecnickcom/tcpdf": "^6.8"
+    }
+}

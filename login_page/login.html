@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="login.css?v=1">
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <h2>Login</h2>
+            <form action="login.php" method="post">
+                <div class="input-box">
+                    <input type="text" name="username" id="username" required>
+                    <label>Username</label>
+                </div>
+                <div class="input-box">
+                    <input type="password" name="password" id="password" required>
+                    <label>Password</label>
+                </div>
+                <div class="input-box3">
+                    <input type="checkbox" name="remember_me" id="remember_me" value="1" class="checkbox">
+                    <label>Remember me?</label>
+                </div>
+                <button type="submit" class="btn" name="btn">Login</button>
+                <p class="register-link">Don't have an account?</p>
+                <a href="../register_page/register.php" class="register">Register Here!</a>
+                <!-- <button type="button" class="btn-remember" name="btn-remember" id="btn-remember">Remember me!</button> -->
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

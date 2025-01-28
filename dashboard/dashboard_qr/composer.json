@@ -1,0 +1,17 @@
+{
+    "name": "asus/dashboard_qr",
+    "autoload": {
+        "psr-4": {
+            "Asus\\DashboardQr\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "febryannnn",
+            "email": "farelfebryan06@gmail.com"
+        }
+    ],
+    "require": {
+        "endroid/qr-code": "^5.1"
+    }
+}

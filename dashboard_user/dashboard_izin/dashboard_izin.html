@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Code and Date</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Perizinan</h2>
+        <form action="dashboard_izin.php" method="POST">
+            <div class="input-group">
+                <label for="date">Select Date</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <div class="jenis">
+                <label for="jenis_izin">Izin karena:</label>
+                <select name="jenis_izin" id="jenis_izin" class="jenis_izin">
+                    <option value="sakit">Sakit</option>
+                    <option value="izin_lainnya">Izin Lainnya</option>
+                </select>
+            </div>
+
+            <button type="submit" name="submit">Submit</button>
+            <a href="../dashboard_user.php" name="Back" class="back" >Back to Home</a>
+        </form>
+    </div>
+</body>
+</html>

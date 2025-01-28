@@ -1,0 +1,164 @@
+<?php 
+
+session_start();
+include "../../service/database.php";
+
+$username = $_SESSION["username"];
+// include "dashboard_absen.html";
+
+$tipe_absen = isset($_POST['tipe_absen']) ? $_POST['tipe_absen'] : "default";
+$nama = isset($_POST['input_string']) ? $_POST['input_string'] : "";
+
+if (isset($_POST['search'])) {
+    $tipe_absen = $_POST['tipe_absen'];
+}
+
+    if ($tipe_absen == "default") {
+        $sql_DEFAULT = "SELECT nama_karyawan AS 'Nama Karyawan', 'Hadir' 
+                    AS Status, tanggal_masuk AS 'Tanggal', waktu_masuk 
+                    AS Waktu FROM absensi WHERE nama_karyawan LIKE '%$nama%'";
+        $result = $db->query($sql_DEFAULT);
+    }
+
+
+    else if ($tipe_absen == "izin") {
+            
+            $sql_izin = "SELECT nama_karyawan AS 'Nama Karyawan', jenis_izin 
+            AS Status, tanggal_masuk AS 'Tanggal', waktu_masuk 
+            AS Waktu FROM izin WHERE nama_karyawan LIKE '%$nama%'";
+            $result = $db->query($sql_izin);
+            
+            
+            if ($result->num_rows == 0) {
+                // echo "<script>alert('data tidak ditemukan')</script>";
+                echo "izin gaada";
+            }
+        }
+
+    else if ($tipe_absen == "hadir") {
+        // $sql_hadir = "SELECT * FROM absensi WHERE nama_karyawan LIKE '%$nama%'";
+        $sql_hadir = "SELECT nama_karyawan AS 'Nama Karyawan', 'Hadir' 
+        AS Status, tanggal_masuk AS 'Tanggal', waktu_masuk AS Waktu 
+        FROM absensi WHERE nama_karyawan LIKE '%$nama%'";
+        $result = $db->query($sql_hadir);
+    } 
+
+    else if ($tipe_absen == "sakit") {
+        $sql_sakit = "SELECT nama_karyawan AS 'Nama Karyawan', jenis_izin 
+        AS Status, tanggal_masuk AS 'Tanggal', waktu_masuk AS Time FROM izin
+         WHERE nama_karyawan LIKE '%$nama%' AND jenis_izin = 'sakit'"; 
+        // $sql_hadir = "SELECT * FROM izin WHERE jenis_izin = 'sakit' AND nama_karyawan LIKE '%$nama%'";
+        $result = $db->query($sql_sakit);
+    } 
+
+    else if ($tipe_absen == "semua") {
+        $sql_all = "SELECT nama_karyawan, 'Hadir' AS status, tanggal_masuk, waktu_masuk
+                    FROM absensi WHERE nama_karyawan LIKE '%$nama%'
+                    UNION
+                    SELECT nama_karyawan, jenis_izin AS status, tanggal_masuk, waktu_masuk
+                    FROM izin WHERE nama_karyawan LIKE '%$nama%'";
+        $result = $db->query($sql_all);
+    }
+
+            
+            
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Karyawan</title>
+    <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+    <div class="container">
+        <h1>Data Absensi Karyawan</h1>
+        <div class="fitur">
+            <form action="dashboard_absen.php" method="post">
+                <div>
+                    <input type="text" placeholder="Cari nama karyawan" name="input_string" 
+                    value="<?php echo isset($_POST['input_string']) ? htmlspecialchars($_POST['input_string']) : ''; ?>">
+                    <button type="submit" name="search" id="search">cari</button>
+                </div>
+            </form>
+            <form action="dashboard_absen.php" method="post" id="absenForm">
+                <div>
+                    
+                    <label for="tipe_absen">Pilh Tipe Absensi:</label>
+                    <select id="tipe_absen" name="tipe_absen" onchange="submitForm()">
+                        <option value="default" <?php if ($tipe_absen === 'default') echo 'selected '; ?>>Pilih</option>
+                        <option value="hadir" <?php if ($tipe_absen === 'hadir') echo 'selected '; ?>>Hadir</option>
+                        <option value="izin" <?php if ($tipe_absen === 'izin') echo 'selected '; ?>>Izin</option>
+                        <option value="sakit" <?php if ($tipe_absen === 'sakit') echo 'selected '; ?>>Sakit</option>
+                        <option value="semua" <?php if ($tipe_absen === 'semua') echo 'selected '; ?>>Semua</option>
+                    </select>
+                    <label for="tanggal">Tanggal:</label>
+                    <input type="text" id="tanggal" name="tanggal" placeholder="Enter Date">
+                    <label for="bulan">Bulan:</label>
+                    <select name="bulan" id="bulan">
+                        <option value="Januari">Januari</option>
+                        <option value="Februari">Februari</option>
+                        <option value="Maret">Maret</option>
+                        <option value="April">April</option>
+                        <option value="Mei">Mei</option>
+                        <option value="Juni">Juni</option>
+                        <option value="Juli">Juli</option>
+                        <option value="Agustus">Agustus</option>
+                        <option value="September">September</option>
+                        <option value="Oktober">Oktober</option>
+                        <option value="November">November</option>
+                        <option value="Desember">Desember</option>
+                    </select>
+                    <label for="tahun">Tahun:</label>
+                    <select name="tahun" id="tahun">
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        
+        <div class="table-container">
+            <?php
+            
+            if ($result->num_rows > 0) {
+                echo "<table>";
+                echo "<tr>";
+                // Menampilkan header tabel (nama kolom)
+                while ($field_info = $result->fetch_field()) {
+                    echo "<th>" . htmlspecialchars($field_info->name) . "</th>";
+                }
+                echo "</tr>";
+
+                // Menampilkan semua baris data
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    foreach ($row as $column) {
+                        echo "<td>" . htmlspecialchars($column) . "</td>";
+                    }
+                    echo "</tr>";
+                }
+                echo "</table>";
+            } else {
+                echo "<p class='no-data'>Data tidak ditemukan.</p>";
+            }
+            
+            
+            ?>
+        </div>
+        <a href="../dashboard.php" class="home">Back to Home</a>
+    </div>
+    <script>
+        function submitForm() {
+        document.getElementById("absenForm").submit();
+    }
+    </script>
+</body>
+</html>
+
+

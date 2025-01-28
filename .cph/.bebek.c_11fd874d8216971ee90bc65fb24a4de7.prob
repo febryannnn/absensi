@@ -1,0 +1,1 @@
+{"name":"Local: bebek","url":"c:\\laragon\\www\\absensi\\bebek.c","tests":[{"id":1737039109187,"input":"8\n5\n1\n3\n4\n6\n5\n2\n6","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\laragon\\www\\absensi\\bebek.c","group":"local","local":true}
